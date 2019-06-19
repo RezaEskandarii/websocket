@@ -8,8 +8,7 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "hbs": "^4.0.4",
-    "socket.io": "^2.2.0",
-    "sqlite3": "^4.0.9"
+    "socket.io": "^2.2.0"
   },
   "devDependencies": {},
   "scripts": {

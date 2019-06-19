@@ -3,8 +3,8 @@ var bodyParser = require('body-parser');
 var app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
-var sqlite3 = require("sqlite3").verbose();
-var db = new sqlite3.Database(":memory:");
+// var sqlite3 = require("sqlite3").verbose();
+// var db = new sqlite3.Database(":memory:");
 var session = require('express-session');
 var _session;
 app.set('trust proxy', 1) // trust first proxy
@@ -33,12 +33,12 @@ app.post("/registration", function (request, response) {
     const password = request.body.password;
     request.session.email = email;
     _email = email;
-    db.serialize(function () {
-        db.run("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,email VARCHAR(255),password VARCHAR(255))");
-        var stmt = db.prepare("insert into users (`email`,`password`) values (?,?)");
-        stmt.run(email, password);
-        stmt.finalize();
-    });
+    // db.serialize(function () {
+    //     db.run("CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY AUTOINCREMENT,email VARCHAR(255),password VARCHAR(255))");
+    //     var stmt = db.prepare("insert into users (`email`,`password`) values (?,?)");
+    //     stmt.run(email, password);
+    //     stmt.finalize();
+    // });
     response.redirect("/room");
 });
 
@@ -61,13 +61,10 @@ function fetchUsers() {
     return users;
 }
 
-fetchUsers().forEach(user => {
-    console.log(user);
-});
+
 io.on('connection', function (socket) {
     socket.on("new_user", (_user_) => {
         socket.user = _user_;
-        console.log(socket.user);
         io.emit("get_user", socket.user);
     });
     socket.on("new_message", function (message) {
@@ -79,7 +76,6 @@ io.on('connection', function (socket) {
         io.emit("received", message);
     });
     socket.on('draw',function (data) {
-       console.log(data);
        io.emit("do_draw",data);
     });
 });
