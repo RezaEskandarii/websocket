@@ -21,7 +21,7 @@ body, html {
 
 .chat-body{
     height: 300px;
-    overflow: scroll;
+    overflow-x: scroll;
 }
 
 .users-body{

@@ -22,8 +22,9 @@
                     <form action="">
                         <div class="form-group">
                             <div class="row">
-                                <input type="text" class="form-control chat_text" id="chat_text" style="width: 85%;">
+                                <input type="text" class="form-control chat_text" id="chat_text" style="width: 55%;">
                                 <button type="submit" class="btn btn-success float-right" id="send_btn">Send</button>
+                                <input type="file" class="btn-sm btn-warning" id="file">
                             </div>
                         </div>
                     </form>
@@ -58,13 +59,16 @@
 
     btn.on('click', function (e) {
         e.preventDefault();
+        if (chat_text.val()==""){
+            alert("chat is empty");
+        }
         socket.emit("new_message", {
             type: "text",
             content: chat_text.val(),
             user: localStorage.getItem("email").substring(0, localStorage.email.lastIndexOf("@")),
             usage: "group",
             sender: localStorage.getItem("email"),
-            direction: null
+            direction: "left"
         });
         chat_text.val("");
     });
@@ -106,9 +110,6 @@
 
     function Draw(x, y, isDown) {
         if (isDown) {
-            ctx.beginPath();
-            ctx.lineJoin = "round";
-            ctx.moveTo(lastX, lastY);
             var position = {
                 x: x,
                 y: y,
@@ -132,6 +133,22 @@
         lastY = line.y;
     });
 
+    $("#file").on('change',function (e) {
+        var file = e.originalEvent.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            socket.emit('image', evt.target.result);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    socket.on('image_data', function (base64image) {
+        $(".chat-body").append("<p>");
+        $(".chat-body").append(
+                 '<a target="_blank" href="' + base64image + '"><img width="30%" class="slides" src="' + base64image + '" /></a>'
+        );
+        $(".chat-body").append("</p>");
+    });
 </script>
 </body>
 </html>

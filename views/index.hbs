@@ -44,9 +44,9 @@
     var socket = io();
     $("#registration_form").on('submit', function () {
         localStorage.setItem("email", $("#email").val());
+        const name = localStorage.email.substring(0,localStorage.email.lastIndexOf("@"));
+        socket.emit("new_user", name);
     });
-    const name = localStorage.email.substring(0,localStorage.email.lastIndexOf("@"));
-    socket.emit("new_user", name);
 </script>
 </body>
 </html>
